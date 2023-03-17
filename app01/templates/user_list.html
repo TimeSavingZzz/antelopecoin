@@ -1,0 +1,24 @@
+{% load  static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}"> 
+</head>
+<body>
+
+<h1>欢迎，{{ user_dict.username }}</h1>
+<h2>账户余额：{{ user_dict.coin_account }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn-success" name="sign" value="0.1">签到</button>
+    <button type="submit" class="btn-success" name="sign" value="1">批改小作业</button>
+    <button type="submit" class="btn-success" name="sign" value="1.5">批改大作业</button>
+</form>
+
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.js' %}"> </script>
+</body>
+</html>
