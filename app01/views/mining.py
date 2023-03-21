@@ -3,7 +3,7 @@ import random
 from app01 import models
 import datetime
 from hashlib import sha256
-from Daily_Payable_Calculation import calculation
+from app01.views.Daily_Payable_Calculation import calculation
 
 
 def instant_mining(userid, coin_account, flag):
@@ -44,7 +44,7 @@ def instant_mining(userid, coin_account, flag):
     flag = True
     coin_account = float(coin_account)
 
-    models.User_Info.objects.filter(id=userid).update(coin_account= coin_account + salary)
+    models.UserInfo.objects.filter(id=userid).update(coin_account= coin_account + salary)
     models.Mining.objects.create(create_time=now_time, flag=flag, user_id=userid, salary= salary)
 
 

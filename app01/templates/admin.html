@@ -1,0 +1,138 @@
+{% load  static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <style>
+    .control-label {
+        font-size: 14px;}
+    .modal-dialog {
+        width: 700px;}
+
+
+</style>
+
+</head>
+<body>
+<div class="container">
+    <h1>欢迎，尊敬的管理员：{{ user_dict.username }}</h1>
+    <h2>账户余额：{{ user_dict.coin_account }}</h2>
+    <hr>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn-success" name="sign" value="0.1">签到</button>
+        <button type="submit" class="btn-success" name="sign" value="1">批改小作业</button>
+        <button type="submit" class="btn-success" name="sign" value="1.5">批改大作业</button>
+    </form>
+
+    <input type="button"  class="btn-primary" id="CreateActivity" value="创建活动" >
+
+</div>
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">创建活动</h4>
+            </div>
+            <div class="modal-body">
+
+{#                表单#}
+                <form class="form-horizontal" id="formModal">
+                    <div class="form-group">
+                        <label for="inputbegintime" class="col-sm-2 control-label">活动开始时间</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="begintime" placeholder="输入格式：2023-XX-XX">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputtotaltime" class="col-sm-2 control-label">持续时间</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="totaltime" placeholder="输入格式：60">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputsalary" class="col-sm-2 control-label">总发放金额</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="salary" placeholder="输入格式：30000">
+                        </div>
+                    </div>
+
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button id="btnSummit" type="button" class="btn btn-primary">发布活动</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" name="username">
+        <input type="file" name="cls">
+        <input type="submit" value="ContributionSubmit">
+</form>
+
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.js' %}"></script>
+
+{% block js %}
+<script type="text/javascript">
+    $(function (){
+        bindcreate_activate();
+        bindbtnSummit()
+    })
+    function bindcreate_activate(){
+        $("#CreateActivity").click(function (){
+            $('#myModal').modal('show')
+        });
+
+    }
+
+    function bindbtnSummit() {
+        $("#btnSummit").click(function () {
+
+            // 获取表单数据
+            var begintime = $("#begintime").val();
+            var totaltime = $("#totaltime").val();
+            var salary = $("#salary").val();
+
+            // 构建要提交的数据
+            var data = {
+                "begintime": begintime,
+                "totaltime": totaltime,
+                "salary": salary
+            };
+            $.ajax({
+                url: '/activity/',
+                type: 'POST',
+                data: data,
+                dataType: "JSON",
+                success: function (res) {
+                    console.log(res);
+                },
+                error: function (xhr, status, error) {
+                    // 处理错误的回调函数
+                }
+            });
+        });
+    }
+
+
+</script>
+{% endblock %}
+</body>
+</html>
