@@ -52,7 +52,7 @@ def calculation(begintime, totaltime, salary):
     df = pd.DataFrame(list(day_salary.items()), columns=['time', 'coin'])
 
     # 导出 DataFrame 为 Excel 文件
-    df.to_excel('E:/Step1/djangoProject/djangoProject/activity.xlsx', index=False)
+    df.to_excel('E:/Step1/djangoProject/app01/static/xlsx/activity.xlsx', index=False)
 
     return day_salary
     print(sum1)

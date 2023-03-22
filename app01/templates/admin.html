@@ -3,14 +3,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+
+    <title>管理员界面</title>
+
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
     <style>
     .control-label {
         font-size: 14px;}
     .modal-dialog {
         width: 700px;}
-
+    .module {
+            {#background-color: lightblue;#}
+            {#border: 1px solid black;#}
+            padding: 20px;
+            /* 添加外边距 */
+            margin: 10px;
+        }
 
 </style>
 
@@ -20,7 +29,7 @@
     <h1>欢迎，尊敬的管理员：{{ user_dict.username }}</h1>
     <h2>账户余额：{{ user_dict.coin_account }}</h2>
     <hr>
-    <form method="post">
+    <form method="post" class="module">
         {% csrf_token %}
         <h3>每日工作 <small>增加你的每日贡献，获得挖矿次数</small></h3>
         <button type="submit" class="btn btn-primary" name="sign" value="0.1">签到</button>
@@ -29,18 +38,27 @@
 
     </form>
 
-    <form>
+    <form class="module">
         <h3>创建活动 <small>创建一个发币活动</small></h3>
-        <input type="button"  class="btn btn-danger" id="CreateActivity" value="创建" >
+        <input type="button"  class="btn btn-danger" id="CreateActivity" value="创建">
     </form>
 
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" action="/contribute/list/" class="module">
         {% csrf_token %}
-        <input type="text" name="username">
-        <input type="file" name="cls">
-        <input type="submit" value="ContributionSubmit">
-</form>
+        <h3>上传今日贡献表 <small>xlsx文件：两列，id与contribution</small></h3>
+        <div class="form-group">
+            <div class="form-group">
+                <label for="datepicker">为了方便测试，这里日期可以随便选：</label>
+                <!-- 添加一个输入框用于显示日期选择器 -->
+                <input type="text" class="form-control" id="datepicker" name="date">
+            </div>
+            <input type="file" name="exc">
+        </div>
+        <input type="submit" value="上传" class="btn btn-info ">
+    </form>
+
 </div>
+
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
@@ -94,6 +112,7 @@
 
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 
 {% block js %}
 <script type="text/javascript">
@@ -144,6 +163,14 @@
         });
     }
 
+
+    $(document).ready(function () {
+        // 使用 jQuery 初始化日期选择器
+        $('#datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true
+        });
+    });
 
 </script>
 {% endblock %}

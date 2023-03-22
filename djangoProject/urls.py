@@ -16,12 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from app01.views import views, activity
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', views.admin),
-    path('mining/list/', views.mining_list),
+    path('contribute/list/', views.contribute_list),
     path('user/', views.user),
     path('login/', views.login),
     path('logout/', views.logout),
     path('activity/', activity.add_activity),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

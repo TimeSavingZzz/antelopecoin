@@ -54,6 +54,9 @@
                     <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
                     昨日挖矿列表
                 </h3>
+                {% if new_file_path %}
+                    <a href="{{ new_file_path }}" download>点击下载新文件</a>
+                {% endif %}
             </div>
             <table class="table ">
                 <thead>
@@ -66,12 +69,12 @@
                 </thead>
                 <tbody>
                 {% for obj in miningList %}
-                <tr>
-                    <th >{{ obj.id }}</th>
-                    <td>{{ obj.user.username }}</td>
-                    <td>{{ obj.salary }}</td>
-                    <td>{{ obj.create_time|date:"Y-m-d H:i:s" }}</td>
-                </tr>
+                    <tr>
+                        <th>{{ obj.id }}</th>
+                        <td>{{ obj.user.username }}</td>
+                        <td>{{ obj.salary }}</td>
+                        <td>{{ obj.create_time|date:"Y-m-d H:i:s" }}</td>
+                    </tr>
                 {% endfor %}
                 </tbody>
             </table>
