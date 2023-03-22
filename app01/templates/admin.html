@@ -22,13 +22,24 @@
     <hr>
     <form method="post">
         {% csrf_token %}
-        <button type="submit" class="btn-success" name="sign" value="0.1">签到</button>
-        <button type="submit" class="btn-success" name="sign" value="1">批改小作业</button>
-        <button type="submit" class="btn-success" name="sign" value="1.5">批改大作业</button>
+        <h3>每日工作 <small>增加你的每日贡献，获得挖矿次数</small></h3>
+        <button type="submit" class="btn btn-primary" name="sign" value="0.1">签到</button>
+        <button type="submit" class="btn btn-success" name="sign" value="1">批改小作业</button>
+        <button type="submit" class="btn btn-info" name="sign" value="1.5">批改大作业</button>
+
     </form>
 
-    <input type="button"  class="btn-primary" id="CreateActivity" value="创建活动" >
+    <form>
+        <h3>创建活动 <small>创建一个发币活动</small></h3>
+        <input type="button"  class="btn btn-danger" id="CreateActivity" value="创建" >
+    </form>
 
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="text" name="username">
+        <input type="file" name="cls">
+        <input type="submit" value="ContributionSubmit">
+</form>
 </div>
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -78,12 +89,7 @@
 
 
 
-<form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="text" name="username">
-        <input type="file" name="cls">
-        <input type="submit" value="ContributionSubmit">
-</form>
+
 
 
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
@@ -122,7 +128,14 @@
                 data: data,
                 dataType: "JSON",
                 success: function (res) {
-                    console.log(res);
+                    if (res.status === "duplicate") {
+                        // 使用alert()函数显示提示信息
+                        alert(res.message);
+                    }
+                    else {
+                        alert(res.message);
+                    }
+
                 },
                 error: function (xhr, status, error) {
                     // 处理错误的回调函数

@@ -26,13 +26,13 @@ import pandas as pd
 #
 # # 导出 DataFrame 为 Excel 文件
 # df.to_excel('C:/Users/dj/Desktop//today.xlsx', index=False)
-
+#
 # 从 Excel 文件中读入 DataFrame
 # df = pd.read_excel('C:/Users/dj/Desktop//today.xlsx')
 #
 # # 将 DataFrame 转换为字典
 # today = dict(zip(df['id'], df['contribution']))
-# print(today)
+# # print(today)
 
 """字符串转日期"""
 # import datetime

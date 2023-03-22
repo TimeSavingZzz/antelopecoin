@@ -81,10 +81,6 @@ def admin(request):
     id = info_dict['id']
 
 
-#    print(info_dict)
-
-
-
     if 'sign' in request.POST:
         coin_account = models.UserInfo.objects.filter(id=id).first().coin_account
         wight = request.POST.get("sign")
@@ -98,9 +94,6 @@ def admin(request):
     elif 'mining' in request.POST:
         return
 
-
-    elif 'CreateActivity' in request.POST:
-        return
 
     elif 'ContributionSubmit' in request.POST:
 

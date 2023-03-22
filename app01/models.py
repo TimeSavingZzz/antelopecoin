@@ -30,3 +30,10 @@ class MiningUser(models.Model):
     user = models.ForeignKey(to="UserInfo", to_field="id", blank=True, null=True, on_delete=models.SET_NULL)
     status = models.IntegerField(verbose_name="用户现在的挖矿次数，0表示从头开始，不为0表示接着挖", default=0)
     create_time = models.DateTimeField(verbose_name="挖矿创建时间")
+
+class Activity(models.Model):
+    """管理员发布过的记录"""
+    begin_time = models.DateTimeField(verbose_name="活动开始时间")
+    end_time = models.DateTimeField(verbose_name="活动结束时间")
+    stock = models.IntegerField(verbose_name="本次活动剩余的币")
+    in_progress = models.IntegerField(verbose_name="活动是否在进行")

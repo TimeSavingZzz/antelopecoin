@@ -1,11 +1,14 @@
 import math
-
+from app01 import models
 from scipy.stats import norm
 import pandas as pd
 from workalendar.asia import China
 
 # 通过活动开始时间，活动总时间，活动总发币计算每天发多少，返回一个字典
 def calculation(begintime, totaltime, salary):
+
+    totaltime = int(totaltime)
+    salary = int(salary)
 
     # 此处取高斯分布的95%的置信区间
     count = salary / 0.68
@@ -19,7 +22,7 @@ def calculation(begintime, totaltime, salary):
 
     # 计算实际的发币总和
     sum1 = 0
-
+    strday = ""
     # 创建中国日历对象
     cal = China()
 
@@ -42,7 +45,14 @@ def calculation(begintime, totaltime, salary):
         strday = nextday.strftime("%Y-%m-%d")
         day_salary[strday] = c1
 
-        #sum1 += c1
+        sum1 += c1
+    models.Activity.objects.create(begin_time=begindate, end_time=strday, stock= salary, in_progress=1)
+
+    # 将字典转换为 DataFrame
+    df = pd.DataFrame(list(day_salary.items()), columns=['time', 'coin'])
+
+    # 导出 DataFrame 为 Excel 文件
+    df.to_excel('E:/Step1/djangoProject/djangoProject/activity.xlsx', index=False)
 
     return day_salary
-   # print(sum1)
+    print(sum1)
