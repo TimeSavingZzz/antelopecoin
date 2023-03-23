@@ -1,4 +1,8 @@
 import math
+import os
+
+from django.conf import settings
+
 from app01 import models
 from scipy.stats import norm
 import pandas as pd
@@ -52,7 +56,8 @@ def calculation(begintime, totaltime, salary):
     df = pd.DataFrame(list(day_salary.items()), columns=['time', 'coin'])
 
     # 导出 DataFrame 为 Excel 文件
-    df.to_excel('E:/Step1/djangoProject/app01/static/xlsx/activity.xlsx', index=False)
 
+    file_path = os.path.join(settings.STATIC_ROOT, 'today1.csv')
+    df.to_excel(file_path, index=False)
     return day_salary
     print(sum1)

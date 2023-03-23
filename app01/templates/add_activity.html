@@ -5,6 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-
+{% if new_file_path %}
+    <a href="{{ new_file_path }}" download>点击下载新文件</a>
+{% endif %}
 </body>
 </html>

@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">本次分发列表</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/admin">个人主页 <span class="sr-only">(current)</span></a></li>
+
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">{{ user_info.name }} <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">个人信息</a></li>
+                        <li><a href="#">羚羊主页</a></li>
+                        <li><a href="#">社区</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/logout/">注销</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% load math_filters %}
+<div>
+    <div class="container">
+        {% if new_file_path %}
+            <a href="{{ new_file_path }}" download>点击下载新文件</a>
+        {% endif %}
+
+        <div class="alert alert-info" role="alert">
+            {{ time }}共发放{{ count }}次挖矿次数，期望为{{ count|divide:16 }}币,是否发放？
+            <button id="update-opportunity-btn" class="btn btn-primary">发放</button>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>
+                    昨日挖矿列表
+                </h3>
+            </div>
+
+            <table id="xlsx-data" class="table ">
+                <thead>
+                <tr>
+                    <th>用户id</th>
+                    <th>奖励次数</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+
+{% block js %}
+    <script>
+        // 获取后端传递的 JSON 数据
+        const tableData = {{ tabledata|safe }};
+        let table = $('#xlsx-data');
+        let thead = table.find('thead');
+        let tbody = table.find('tbody');
+        // 填充表头
+        let headers = Object.keys(tableData[0]);
+        let headerRow = $('<tr>');
+        {#headers.forEach(function(header) {#}
+        {#    headerRow.append(`<th>${header}</th>`);#}
+        {# });#}
+        thead.append(headerRow);
+        // 填充表格内容
+        tableData.forEach(function (row) {
+            let rowElement = $('<tr>');
+            headers.forEach(function (header) {
+                rowElement.append(`<td>${row[header]}</td>`);
+            });
+            tbody.append(rowElement);
+        });
+
+        $('#update-opportunity-btn').on('click', function () {
+            const timeValue = "{{ time }}";
+            $.ajax({
+                url: "{% url 'update_opportunity' %}",
+                method: 'POST',
+                data: {
+                    "time":timeValue
+                },
+                headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                success: function (response) {
+                    if (response.status === 'success') {
+                        alert(response.message);
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                },
+                error: function () {
+                    alert('发放失败，请重试或联系管理员！');
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+</body>
+</html>

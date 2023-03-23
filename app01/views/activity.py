@@ -4,6 +4,7 @@ from app01 import models
 from app01.views.Daily_Payable_Calculation import calculation
 from django.http import JsonResponse
 
+
 @csrf_exempt
 def add_activity(request):
     dict = request.POST

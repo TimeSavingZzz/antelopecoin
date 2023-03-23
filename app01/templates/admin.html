@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+
     <style>
     .control-label {
         font-size: 14px;}
@@ -42,7 +43,11 @@
         <h3>创建活动 <small>创建一个发币活动</small></h3>
         <input type="button"  class="btn btn-danger" id="CreateActivity" value="创建">
     </form>
-
+{% if error_message %}
+  <div class="alert alert-danger" role="alert">
+    {{ error_message }}
+  </div>
+{% endif %}
     <form method="post" enctype="multipart/form-data" action="/contribute/list/" class="module">
         {% csrf_token %}
         <h3>上传今日贡献表 <small>xlsx文件：两列，id与contribution</small></h3>
@@ -90,9 +95,6 @@
                             <input type="text" class="form-control" id="salary" placeholder="输入格式：30000">
                         </div>
                     </div>
-
-
-
                 </form>
             </div>
             <div class="modal-footer">
