@@ -58,7 +58,7 @@ def login(request):
             return render(request, 'login.html', {"form": form})
         else:
             j = json.dumps(user_info.coin_account, cls=DecimalEncoder)
-            request.session["info"] = {'id': user_info.id, "name": user_info.username, "role" : user_info.role}
+            request.session["info"] = {'id': user_info.id, "name": user_info.username, "role": user_info.role}
             if user_info.role == "1":
                 return redirect("http://127.0.0.1:8000/user/")
             elif user_info.role == "0":
@@ -110,7 +110,6 @@ def contribute_list(request):
         return render(request, 'admin.html', {"error_message": error_message})
 
 
-
 def update_opportunity(request):
     if request.method == 'POST':
         time = request.POST
@@ -127,27 +126,27 @@ def update_opportunity(request):
 
 def user(request):
     info_dict = request.session["info"]
-    id = info_dict['id']
+    idt = info_dict['id']
 #    print(info_dict)
 
     if request.method == 'POST':
-        coin_account = models.UserInfo.objects.filter(id=id).first().coin_account
+        coin_account = models.UserInfo.objects.filter(id=idt).first().coin_account
         wight = request.POST.get("sign")
         print(wight)
         flag = False
-        #instant_mining(id, coin_account, flag)
+
         return redirect("http://127.0.0.1:8000/mining/list/")
-    user_dict = models.UserInfo.objects.filter(id= id).first()
+    user_dict = models.UserInfo.objects.filter(id=idt).first()
     print(user_dict)
-    return render(request, "user_list.html", {"user_dict": user_dict})
+    return render(request, "user.html", {"user_dict": user_dict})
 
 
 def admin(request):
     info_dict = request.session["info"]
-    id = info_dict['id']
+    idt = info_dict['id']
 
     if 'sign' in request.POST:
-        coin_account = models.UserInfo.objects.filter(id=id).first().coin_account
+        coin_account = models.UserInfo.objects.filter(id=idt).first().coin_account
         wight = request.POST.get("sign")
         print(wight)
         flag = False
@@ -157,7 +156,15 @@ def admin(request):
     elif 'mining' in request.POST:
         return
 
-
-    user_dict = models.UserInfo.objects.filter(id=id).first()
+    user_dict = models.UserInfo.objects.filter(id=idt).first()
     print(user_dict)
     return render(request, "admin.html", {"user_dict": user_dict})
+
+
+def mining(request):
+    dict_miner = request.POST
+    idt = dict_miner["id_t"]
+    dig_time = dict_miner["dig_times"]
+    status = dict_miner["status"]
+    dict_results = instant_mining(idt, dig_time, status)
+    return JsonResponse(dict_results)

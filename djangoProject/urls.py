@@ -27,6 +27,7 @@ urlpatterns = [
     path('logout/', views.logout),
     path('activity/', activity.add_activity),
     path('update_opportunity/', views.update_opportunity, name='update_opportunity'),
+    path('mining/', views.mining),
 ]
 
 if settings.DEBUG:

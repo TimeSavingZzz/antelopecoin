@@ -1,0 +1,131 @@
+{% load  static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
+    <style>
+        .control-label {
+            font-size: 14px;
+        }
+
+        .modal-dialog {
+            width: 700px;
+        }
+
+        .module {
+        {#background-color: lightblue;#}{#border: 1px solid black;#} padding: 20px;
+            /* 添加外边距 */
+            margin: 10px;
+        }
+
+        .color_div {
+            #background-color: lightblue;
+        }
+    </style>
+</head>
+<body>
+
+<h1>欢迎，{{ user_dict.username }}</h1>
+<h2>账户余额：{{ user_dict.coin_account }}</h2>
+
+
+<div class="container color_div">
+    <h1 class="text-center">开始挖矿！</h1>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 ">
+            <div class="panel panel-primary">
+                <div class="panel-heading">据上次挖矿成功已经挖过：{{ user_dict.status }}
+                    剩余挖矿次数:{{ user_dict.Opportunity }}</div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-1 text-center">
+                        <button type="button" class="btn btn-primary btn-lg dig-btn" data-dig-times="1">挖一次</button>
+                    </div>
+                    <div class="col-md-3 col-md-offset-1 text-center">
+                        <button type="button" class="btn btn-primary btn-lg dig-btn" data-dig-times="10">挖十次</button>
+                    </div>
+                    <div class="col-md-3 col-md-offset-1 text-center">
+                        <button type="button" class="btn btn-danger btn-lg dig-btn"
+                                data-dig-all="{{ user_dict.Opportunity }}">挖全部
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 模态框结构 -->
+<div class="modal fade" id="miningResultModal" tabindex="-1" role="dialog" aria-labelledby="miningResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="miningResultModalLabel">挖矿结果</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="mining-results">
+                <!-- 挖矿结果将在这里显示 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn-success" name="sign" value="0.1">签到</button>
+    <button type="submit" class="btn-success" name="sign" value="1">批改小作业</button>
+    <button type="submit" class="btn-success" name="sign" value="1.5">批改大作业</button>
+</form>
+
+
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.js' %}"></script>
+{% block js %}
+    <script>
+        const idt = {{ user_dict.id }};
+        const sta = {{ user_dict.status }};
+        $(document).ready(function () {
+            $('.dig-btn').on('click', function () {
+                // 获取按钮中的 data-dig-times 或 data-dig-all 属性的值
+                let digTimes = $(this).data('digTimes') || $(this).data('digAll');
+
+                // 发送 AJAX 请求
+                $.ajax({
+                    url: '/mining/',
+                    method: 'POST',
+                    data: {
+                        "dig_times": digTimes,
+                        "id_t": idt
+                        "status": sta
+                    },
+                    headers: {'X-CSRFToken': '{{ csrf_token }}'},
+                    success: function (response) {
+                        let miningResults = $('#mining-results');
+                        let successCount = Object.keys(response).length;
+                        let resultHTML = '<h3>挖矿成功次数：' + successCount + '</h3><ul>';
+
+                        for (let i in response) {
+                            resultHTML += '<li>成功 ' + i + ': ' + response[i] + '</li>';
+                        }
+
+                        resultHTML += '</ul>';
+                        miningResults.html(resultHTML);
+
+                        // 显示模态框
+                        $('#miningResultModal').modal('show');
+                    },
+                    error: function () {
+                        alert('挖矿过程中发生错误');
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+</body>
+</html>

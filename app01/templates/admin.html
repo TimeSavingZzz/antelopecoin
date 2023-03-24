@@ -21,7 +21,9 @@
             /* 添加外边距 */
             margin: 10px;
         }
-
+    .color_div {
+        #background-color: lightblue;
+    }
 </style>
 
 </head>
@@ -30,6 +32,28 @@
     <h1>欢迎，尊敬的管理员：{{ user_dict.username }}</h1>
     <h2>账户余额：{{ user_dict.coin_account }}</h2>
     <hr>
+
+    <div class="container color_div">
+        <h1 class="text-center">开始挖矿！</h1>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 ">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">挖矿次数:{{ user_dict.Opportunity }}</div>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-1 text-center">
+                            <button type="button" class="btn btn-primary btn-lg module">挖一次</button>
+                        </div>
+                        <div class="col-md-3 col-md-offset-1 text-center">
+                            <button type="button" class="btn btn-primary btn-lg module">挖十次</button>
+                        </div>
+                        <div class="col-md-3 col-md-offset-1 text-center">
+                            <button type="button" class="btn btn-danger btn-lg module">挖全部</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <form method="post" class="module">
         {% csrf_token %}
         <h3>每日工作 <small>增加你的每日贡献，获得挖矿次数</small></h3>
@@ -38,6 +62,8 @@
         <button type="submit" class="btn btn-info" name="sign" value="1.5">批改大作业</button>
 
     </form>
+
+
 
     <form class="module">
         <h3>创建活动 <small>创建一个发币活动</small></h3>
