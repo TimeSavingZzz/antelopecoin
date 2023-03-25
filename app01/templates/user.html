@@ -6,18 +6,20 @@
     <title>Title</title>
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.css' %}">
     <style>
-        .control-label {
-            font-size: 14px;
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .modal-dialog {
             width: 700px;
         }
 
-        .module {
-        {#background-color: lightblue;#}{#border: 1px solid black;#} padding: 20px;
-            /* 添加外边距 */
-            margin: 10px;
+        .buttontb {
+            padding: 20px;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
 
         .color_div {
@@ -27,8 +29,10 @@
 </head>
 <body>
 
-<h1>欢迎，{{ user_dict.username }}</h1>
-<h2>账户余额：{{ user_dict.coin_account }}</h2>
+<div class="container">
+    <div class="header"><h1>欢迎，{{ user_dict.username }}</h1> <a href="http://127.0.0.1:8000/logout/">登出</a></div>
+    <h2>账户余额：{{ user_dict.coin_account }}</h2>
+
 
 
 <div class="container color_div">
@@ -39,13 +43,13 @@
                 <div class="panel-heading">据上次挖矿成功已经挖过：{{ user_dict.status }}
                     剩余挖矿次数:{{ user_dict.Opportunity }}</div>
                 <div class="row">
-                    <div class="col-md-3 col-md-offset-1 text-center">
+                    <div class="col-md-3 col-md-offset-1 text-center buttontb">
                         <button type="button" class="btn btn-primary btn-lg dig-btn" data-dig-times="1">挖一次</button>
                     </div>
-                    <div class="col-md-3 col-md-offset-1 text-center">
+                    <div class="col-md-3 col-md-offset-1 text-center buttontb">
                         <button type="button" class="btn btn-primary btn-lg dig-btn" data-dig-times="10">挖十次</button>
                     </div>
-                    <div class="col-md-3 col-md-offset-1 text-center">
+                    <div class="col-md-3 col-md-offset-1 text-center buttontb">
                         <button type="button" class="btn btn-danger btn-lg dig-btn"
                                 data-dig-all="{{ user_dict.Opportunity }}">挖全部
                         </button>
@@ -55,8 +59,19 @@
         </div>
     </div>
 </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <h3>每日工作 <small>增加你的每日贡献，获得挖矿次数</small></h3>
+        <button type="submit" class="btn-success" name="sign" value="0.1">签到</button>
+        <button type="submit" class="btn-success" name="sign" value="1">批改小作业</button>
+        <button type="submit" class="btn-success" name="sign" value="1.5">批改大作业</button>
+    </form>
+
+</div>
 <!-- 模态框结构 -->
-<div class="modal fade" id="miningResultModal" tabindex="-1" role="dialog" aria-labelledby="miningResultModalLabel" aria-hidden="true">
+<div class="modal fade" id="miningResultModal" tabindex="-1" role="dialog" aria-labelledby="miningResultModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -75,13 +90,6 @@
     </div>
 </div>
 
-<form method="post">
-    {% csrf_token %}
-    <button type="submit" class="btn-success" name="sign" value="0.1">签到</button>
-    <button type="submit" class="btn-success" name="sign" value="1">批改小作业</button>
-    <button type="submit" class="btn-success" name="sign" value="1.5">批改大作业</button>
-</form>
-
 
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.js' %}"></script>
@@ -89,6 +97,7 @@
     <script>
         const idt = {{ user_dict.id }};
         const sta = {{ user_dict.status }};
+
         $(document).ready(function () {
             $('.dig-btn').on('click', function () {
                 // 获取按钮中的 data-dig-times 或 data-dig-all 属性的值
@@ -100,17 +109,22 @@
                     method: 'POST',
                     data: {
                         "dig_times": digTimes,
-                        "id_t": idt
+                        "id_t": idt,
                         "status": sta
                     },
                     headers: {'X-CSRFToken': '{{ csrf_token }}'},
                     success: function (response) {
+                        if (response.status === "error") {
+                            // 使用alert()函数显示提示信息
+                            alert(response.message);
+                        }
+                        else {
                         let miningResults = $('#mining-results');
                         let successCount = Object.keys(response).length;
-                        let resultHTML = '<h3>挖矿成功次数：' + successCount + '</h3><ul>';
+                        let resultHTML = '<h3>本次挖矿获得羚羊币：' + successCount + '</h3><ul>';
 
                         for (let i in response) {
-                            resultHTML += '<li>成功 ' + i + ': ' + response[i] + '</li>';
+                            resultHTML += '<li>羚羊币 ' + i + '唯一识别码: ' + response[i] + '</li>';
                         }
 
                         resultHTML += '</ul>';
@@ -118,12 +132,18 @@
 
                         // 显示模态框
                         $('#miningResultModal').modal('show');
-                    },
+                    }},
                     error: function () {
+
                         alert('挖矿过程中发生错误');
                     }
                 });
             });
+            // 为模态框添加关闭事件监听器
+            $('#miningResultModal').on('hidden.bs.modal', function () {
+                location.reload(); // 刷新页面
+            });
+
         });
     </script>
 {% endblock %}

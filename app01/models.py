@@ -12,7 +12,7 @@ class UserInfo(models.Model):
     coin_account = models.DecimalField(verbose_name="羚羊币余额", max_digits=10, decimal_places=2, default=0)
     Opportunity = models.IntegerField(verbose_name="用户现在拥有的挖矿次数", default=100)
     status = models.IntegerField(verbose_name="用户现在的挖矿次数，0表示从头开始，不为0表示接着挖", default=0)
-    pow1 = models.CharField(max_length=16, verbose_name="挖矿历史的第一个参数")
+    pow1 = models.CharField(max_length=64, verbose_name="挖矿历史的第一个参数")
     role = models.CharField(max_length=16, default="1")
 
     @classmethod

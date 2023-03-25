@@ -1,5 +1,5 @@
 import os
-
+from django.db.models import F
 import pandas as pd
 from django.conf import settings
 from django.contrib import messages
@@ -163,8 +163,13 @@ def admin(request):
 
 def mining(request):
     dict_miner = request.POST
-    idt = dict_miner["id_t"]
-    dig_time = dict_miner["dig_times"]
-    status = dict_miner["status"]
+    idt = int(dict_miner["id_t"])
+    user_info = models.UserInfo.objects.filter(id=idt).first()
+    dig_time = int(dict_miner["dig_times"])
+    status = int(dict_miner["status"])
+    if user_info.Opportunity < dig_time:
+        return JsonResponse({'status': 'error', 'message': '剩余挖矿次数不够！'})
+
     dict_results = instant_mining(idt, dig_time, status)
+    models.UserInfo.objects.filter(id=idt).update(Opportunity=F('Opportunity') - dig_time)
     return JsonResponse(dict_results)
